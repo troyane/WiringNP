@@ -114,7 +114,7 @@ static int getFieldValueInCpuInfo(char* hardware, int hardwareMaxLen, char* revi
             line[j] = 0x00;
             n = strlen(line);
             if (n>0) {
-                LOGD("LINE: %s\n", line);
+                //LOGD("LINE: %s\n", line);
                 #define GetKeyValue(isGot,valP,keyName,buff,buffLen) \
                 if (isGot==0) { \
                     strcpy(line2, line); \
@@ -175,12 +175,12 @@ static int getAllwinnerBoardID(char* boardId, int boardIdMaxLen )
             line[j] = 0x00;
             n = strlen(line);
             if (n>0) {
-                LOGD("LINE: %s\n", line);
+                //LOGD("LINE: %s\n", line);
                 if (p = strtok(line, ":")) {
                     if (strncasecmp(p, sunxi_board_id_fieldname, strlen(sunxi_board_id_fieldname)) == 0) {
-                        LOGD("\t\tkey=\"%s\"\n", p);
+                        //LOGD("\t\tkey=\"%s\"\n", p);
                         if (p = strtok(0, ":")) {
-                            LOGD("\t\tv=\"%s\"\n", p);
+                            //LOGD("\t\tv=\"%s\"\n", p);
                             memset(boardId,0,boardIdMaxLen);
                             strncpy(boardId, p, boardIdMaxLen-1);
                             ret = 0;
@@ -204,9 +204,9 @@ int getBoardType(BoardHardwareInfo** retBoardInfo) {
     memset(hardware, 0, sizeof(hardware));
     memset(revision, 0, sizeof(revision));
     if ((ret = getFieldValueInCpuInfo(hardware, sizeof(hardware), revision, sizeof(revision))) > 0) {
-        LOGD("hardware:%s,revision:%s\n", hardware, revision);
+        //LOGD("hardware:%s,revision:%s\n", hardware, revision);
     } else {
-        LOGD("%s, ret:%d\n", "getFieldValueInCpuInfo failed", ret);
+        //LOGD("%s, ret:%d\n", "getFieldValueInCpuInfo failed", ret);
         return -1;
     }
 
@@ -235,31 +235,31 @@ int getBoardType(BoardHardwareInfo** retBoardInfo) {
         || strncasecmp(hardware, h3_kernel4, strlen(h3_kernel4)) == 0 || strncasecmp(hardware, h5_kernel4, strlen(h5_kernel4)) == 0) {
         int ret = getAllwinnerBoardID(allwinnerBoardID, sizeof(allwinnerBoardID));
         if (ret == 0) {
-            LOGD("got boardid: %s\n", allwinnerBoardID);
+            //LOGD("got boardid: %s\n", allwinnerBoardID);
             for (i=0; i<(sizeof(gAllBoardHardwareInfo)/sizeof(BoardHardwareInfo)); i++) {
-                LOGD("\t{{ enum, start compare[%d]: %s <--> %s\n", i, gAllBoardHardwareInfo[i].kernelHardware, hardware);
+                //LOGD("\t{{ enum, start compare[%d]: %s <--> %s\n", i, gAllBoardHardwareInfo[i].kernelHardware, hardware);
                 if (strncasecmp(gAllBoardHardwareInfo[i].kernelHardware, hardware, strlen(gAllBoardHardwareInfo[i].kernelHardware)) == 0) {
-                    LOGD("\t\tMATCH %s\n", hardware);
+                    //LOGD("\t\tMATCH %s\n", hardware);
                     if (strncasecmp(gAllBoardHardwareInfo[i].allwinnerBoardID, allwinnerBoardID, strlen(gAllBoardHardwareInfo[i].allwinnerBoardID)) == 0) {
                         if (retBoardInfo != 0) {
                             *retBoardInfo = &gAllBoardHardwareInfo[i];
                         }
-                        LOGD("\t\t\tMATCH board id: %s\n", allwinnerBoardID);
+                        //LOGD("\t\t\tMATCH board id: %s\n", allwinnerBoardID);
                         return gAllBoardHardwareInfo[i].boardTypeId;
                     } else {
-                        LOGD("\t\t\tnot match board id: %s\n", allwinnerBoardID);
+                        //LOGD("\t\t\tnot match board id: %s\n", allwinnerBoardID);
                     }
                 } else {
-                    LOGD("\t\tnot match %s\n", hardware);
+                    //LOGD("\t\tnot match %s\n", hardware);
                 }
-                LOGD("\t}} enum, end compare[%d]\n", i);
+                //LOGD("\t}} enum, end compare[%d]\n", i);
             }
         }
         return -1;
     }
 
     if (strlen(revision) == 0) {
-        LOGD("failed, revision is empty.");
+        //LOGD("failed, revision is empty.");
         return -1;
     }
 
