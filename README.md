@@ -1,18 +1,30 @@
 # WiringNP
 This is a GPIO access library for NanoPi. It is based on the WiringOP for Orange PI which is based on original WiringPi for Raspberry Pi.
 
-Currently supported boards:  
-NanoPi Neo  
-NanoPi Neo Air  
-NanoPi Duo  
-NanoPi Duo2  
-NanoPi NEO2  
-NanoPi NEO Plus2  
-NanoPi M1  
-NanoPi M1 Plus  
-NanoPi NEO Core  
-NanoPi NEO Core2  
+Currently supported boards:
+NanoPi Neo
+NanoPi Neo Air
+NanoPi Duo
+NanoPi Duo2
+NanoPi NEO2
+NanoPi NEO Plus2
+NanoPi M1
+NanoPi M1 Plus
+NanoPi NEO Core
+NanoPi NEO Core2
 NanoPi K1 Plus
+  
+---
+This repo main intention is to get working WiringNP on Armbian for NanoPi Neo Air.
+
+Before building and installing WiringNP you should do some NanoPi Neo Air preparations:
+```
+cd WiringNP/
+chmod 755 NPiAir_preparation.sh
+sudo ./NPiAir_preparation.sh
+```
+
+`sudo` is required here because we need to create file `/etc/sys_info` that will be used by WiringNP as reference.
   
 # Installation
 
