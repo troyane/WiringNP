@@ -152,8 +152,7 @@ static int getAllwinnerBoardID(char* boardId, int boardIdMaxLen )
     int ret = -1;
 
     if (!(f = fopen("/sys/class/sunxi_info/sys_info", "r"))) {
-        LOGD("open /sys/class/sunxi_info/sys_info failed.");
-        LOGD("trying to open /etc/sys_info");
+        LOGD("Open /sys/class/sunxi_info/sys_info failed. Will try to open /etc/sys_info.\n");
 
         if (!(f = fopen("/etc/sys_info", "r"))) {
             LOGE("open /etc/sys_info failed.");
