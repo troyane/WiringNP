@@ -127,14 +127,14 @@ struct wiringPiNodeStruct *wiringPiNodes = NULL;
 //	that I can find )-:
 
 #define BCM2708_PERI_BASE                      0x20000000
-#define GPIO_PADS  (BCM2708_PERI_BASE + 0x00100000)
-#define CLOCK_BASE  (BCM2708_PERI_BASE + 0x00101000)
-#define GPIO_BASE  (BCM2708_PERI_BASE + 0x00200000)
-#define GPIO_TIMER  (BCM2708_PERI_BASE + 0x0000B000)
-#define GPIO_PWM  (BCM2708_PERI_BASE + 0x0020C000)
+#define GPIO_PADS         (BCM2708_PERI_BASE + 0x00100000)
+#define CLOCK_BASE        (BCM2708_PERI_BASE + 0x00101000)
+#define GPIO_BASE         (BCM2708_PERI_BASE + 0x00200000)
+#define GPIO_TIMER        (BCM2708_PERI_BASE + 0x0000B000)
+#define GPIO_PWM          (BCM2708_PERI_BASE + 0x0020C000)
 
 #define PAGE_SIZE  (4*1024)
-#define BLOCK_SIZE  (4*1024)
+#define BLOCK_SIZE (4*1024)
 
 // PWM
 //	Word offsets into the PWM control region
@@ -149,7 +149,7 @@ struct wiringPiNodeStruct *wiringPiNodes = NULL;
 //	Clock regsiter offsets
 
 #define PWMCLK_CNTL 40
-#define PWMCLK_DIV 41
+#define PWMCLK_DIV  41
 
 #define PWM0_MS_MODE    0x0080  // Run in MS mode
 #define PWM0_USEFIFO    0x0020  // Data from FIFO
@@ -170,15 +170,15 @@ struct wiringPiNodeStruct *wiringPiNodes = NULL;
 // Timer
 //	Word offsets
 
-#define TIMER_LOAD (0x400 >> 2)
-#define TIMER_VALUE (0x404 >> 2)
-#define TIMER_CONTROL (0x408 >> 2)
-#define TIMER_IRQ_CLR (0x40C >> 2)
-#define TIMER_IRQ_RAW (0x410 >> 2)
+#define TIMER_LOAD     (0x400 >> 2)
+#define TIMER_VALUE    (0x404 >> 2)
+#define TIMER_CONTROL  (0x408 >> 2)
+#define TIMER_IRQ_CLR  (0x40C >> 2)
+#define TIMER_IRQ_RAW  (0x410 >> 2)
 #define TIMER_IRQ_MASK (0x414 >> 2)
-#define TIMER_RELOAD (0x418 >> 2)
-#define TIMER_PRE_DIV (0x41C >> 2)
-#define TIMER_COUNTER (0x420 >> 2)
+#define TIMER_RELOAD   (0x418 >> 2)
+#define TIMER_PRE_DIV  (0x41C >> 2)
+#define TIMER_COUNTER  (0x420 >> 2)
 
 // Locals to hold pointers to the hardware
 
@@ -194,31 +194,30 @@ static volatile uint32_t *timerIrqRaw;
 
 /*add for BananaPro by LeMaker team*/
 // for mmap BananaPro 
-#define MAX_PIN_NUM  (0x40)  //64
+#define MAX_PIN_NUM  (0x40)  // 64
 #define SUNXI_GPIO_BASE (0x01C20800)
 #define MAP_SIZE (4096*2)
 #define MAP_MASK (MAP_SIZE - 1)
 //sunxi_pwm
 //#define SUNXI_PWM_BASE (0x01c20e00)
-#define SUNXI_PWM_BASE (0x01c21400)
-#define SUNXI_PWM_CTRL_REG  (SUNXI_PWM_BASE)
-#define SUNXI_PWM_CH0_PERIOD  (SUNXI_PWM_BASE + 0x4)
-#define SUNXI_PWM_CH1_PERIOD  (SUNXI_PWM_BASE + 0x8)
+#define SUNXI_PWM_BASE                 (0x01c21400)
+#define SUNXI_PWM_CTRL_REG         (SUNXI_PWM_BASE)
+#define SUNXI_PWM_CH0_PERIOD (SUNXI_PWM_BASE + 0x4)
+#define SUNXI_PWM_CH1_PERIOD (SUNXI_PWM_BASE + 0x8)
 
-#define SUNXI_PWM_CH0_EN   (1 << 4)
-#define SUNXI_PWM_CH0_ACT_STA  (1 << 5)
+#define SUNXI_PWM_CH0_EN          (1 << 4)
+#define SUNXI_PWM_CH0_ACT_STA     (1 << 5)
 #define SUNXI_PWM_SCLK_CH0_GATING (1 << 6)
-#define SUNXI_PWM_CH0_MS_MODE  (1 << 7) //pulse mode
-#define SUNXI_PWM_CH0_PUL_START  (1 << 8)
+#define SUNXI_PWM_CH0_MS_MODE     (1 << 7) // pulse mode
+#define SUNXI_PWM_CH0_PUL_START   (1 << 8)
 
-#define SUNXI_PWM_CH1_EN   (1 << 19)
-#define SUNXI_PWM_CH1_ACT_STA  (1 << 20)
+#define SUNXI_PWM_CH1_EN          (1 << 19)
+#define SUNXI_PWM_CH1_ACT_STA     (1 << 20)
 #define SUNXI_PWM_SCLK_CH1_GATING (1 << 21)
-#define SUNXI_PWM_CH1_MS_MODE  (1 << 22) //pulse mode
-#define SUNXI_PWM_CH1_PUL_START  (1 << 23)
+#define SUNXI_PWM_CH1_MS_MODE     (1 << 22) // pulse mode
+#define SUNXI_PWM_CH1_PUL_START   (1 << 23)
 
-
-#define PWM_CLK_DIV_120          0
+#define PWM_CLK_DIV_120  0
 #define PWM_CLK_DIV_180  1
 #define PWM_CLK_DIV_240  2
 #define PWM_CLK_DIV_360  3
@@ -230,12 +229,12 @@ static volatile uint32_t *timerIrqRaw;
 #define PWM_CLK_DIV_72K  12
 
 #define GPIO_PADS_BP  (0x00100000)
-#define CLOCK_BASE_BP  (0x00101000)
+#define CLOCK_BASE_BP (0x00101000)
 //	addr should 4K*n
 //	#define GPIO_BASE_BP		(SUNXI_GPIO_BASE)
 #define GPIO_BASE_BP  (0x01C20000)
-#define GPIO_TIMER_BP  (0x0000B000)
-#define GPIO_PWM_BP  (0x01C21000)  //need 4k*n
+#define GPIO_TIMER_BP (0x0000B000)
+#define GPIO_PWM_BP   (0x01C21000)  // need 4k*n
 
 static int wiringPinMode = WPI_MODE_UNINITIALISED;
 int wiringPiCodes = FALSE;
