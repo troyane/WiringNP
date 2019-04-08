@@ -277,7 +277,6 @@ static int sysFds [MAX_PIN_COUNT] ={
 
 //static void (*isrFunctions [64])(void);
 
-
 static int upDnConvert[3] = {7, 7, 5};
 
 static int *pinToGpio = 0;
@@ -2158,19 +2157,14 @@ void digitalWriteByte(int value) {
     }
 
     if (wiringPiMode == WPI_MODE_GPIO_SYS || wiringPiMode == WPI_MODE_GPIO) {
-
         for (pin = 0; pin < 8; ++pin) {
-
             pinMode(pin, OUTPUT);
             delay(1);
             digitalWrite(pinToGpio [pin], value & mask);
             mask <<= 1;
         }
-
     } else if (wiringPiMode == WPI_MODE_PINS) {
-
         for (pin = 0; pin < 8; ++pin) {
-
             pinMode(pin, OUTPUT);
             delay(1);
             digitalWrite(pin, value & mask);
@@ -2277,7 +2271,7 @@ int wiringPiISR(int pin, int mode, void (*function)(void)) {
     return wiringPiFailure(WPI_FATAL, "wiringPiISR: Not implemented");
     
     if ((pin < 0) || (pin >= MAX_PIN_COUNT))
-        return wiringPiFailure(WPI_FATAL, "wiringPiISR: pin must be 0-%d (%d)\n", MAX_PIN_COUNT-1,pin);
+        return wiringPiFailure(WPI_FATAL, "wiringPiISR: pin must be 0-%d (%d)\n", MAX_PIN_COUNT-1, pin);
 
     /**/ if (wiringPiMode == WPI_MODE_UNINITIALISED)
         return wiringPiFailure(WPI_FATAL, "wiringPiISR: wiringPi has not been initialised. Unable to continue.\n");
@@ -2288,15 +2282,13 @@ int wiringPiISR(int pin, int mode, void (*function)(void)) {
     else
         bcmGpioPin = pin;
 
-
     if (-1 == bcmGpioPin) /**/ {
         printf("[%s:L%d] the pin:%d is invaild,please check it over!\n", __func__, __LINE__, pin);
         return -1;
     }
 
     //if (edge[bcmGpioPin] == -1)
-        return wiringPiFailure(WPI_FATAL, "wiringPiISR: pin not sunpprt on Nano PI M1 (%d,%d)\n", pin, bcmGpioPin);
-    
+    return wiringPiFailure(WPI_FATAL, "wiringPiISR: pin not sunpprt on Nano PI M1 (%d,%d)\n", pin, bcmGpioPin);
 }
 
 /*
@@ -2438,10 +2430,8 @@ int wiringPiSetup(void) {
     //    boardRev = piBoardRev();
 
     // Open the master /dev/memory device
-
     if ((fd = open("/dev/mem", O_RDWR | O_SYNC | O_CLOEXEC)) < 0)
         return wiringPiFailure(WPI_ALMOST, "wiringPiSetup: Unable to open /dev/mem: %s\n", strerror(errno));
-
 
     // GPIO:
     // BLOCK SIZE * 2 increases range to include pwm addresses
@@ -2450,53 +2440,53 @@ int wiringPiSetup(void) {
         return wiringPiFailure(WPI_ALMOST, "wiringPiSetup: mmap (GPIO) failed: %s\n", strerror(errno));
 
     // PWM
-
     pwm = (uint32_t *) mmap(0, BLOCK_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, GPIO_PWM_BP);
     if ((int32_t) pwm == -1)
         return wiringPiFailure(WPI_ALMOST, "wiringPiSetup: mmap (PWM) failed: %s\n", strerror(errno));
 
     // Clock control (needed for PWM)
-
     clk = (uint32_t *) mmap(0, BLOCK_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, CLOCK_BASE_BP);
     if ((int32_t) clk == -1)
         return wiringPiFailure(WPI_ALMOST, "wiringPiSetup: mmap (CLOCK) failed: %s\n", strerror(errno));
 
     // The drive pads
-
     pads = (uint32_t *) mmap(0, BLOCK_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, GPIO_PADS_BP);
     if ((int32_t) pads == -1)
         return wiringPiFailure(WPI_ALMOST, "wiringPiSetup: mmap (PADS) failed: %s\n", strerror(errno));
 
-
-
     initialiseEpoch();
 
     // If we're running on a compute module, then wiringPi pin numbers don't really many anything...
-
     piBoardId(&model, &rev, &mem, &maker, &overVolted);
     wiringPiMode = WPI_MODE_PINS;
 
     int faBoardId = model;
-    if (faBoardId == NanoPi_M1 || faBoardId == NanoPi_M1_Plus || faBoardId == NanoPi_M1_Plus2 || faBoardId == NanoPi_K1_Plus) {
+    if (faBoardId == NanoPi_M1
+            || faBoardId == NanoPi_M1_Plus
+            || faBoardId == NanoPi_M1_Plus2
+            || faBoardId == NanoPi_K1_Plus) {
 	    pinToGpio = pinToGpio_m1;
 	    physToGpio = physToGpio_m1;
 	    physToPin = physToPin_m1;
-		  syspin = syspin_m1;
-    } else if (faBoardId == NanoPi_NEO || faBoardId == NanoPi_NEO_Air || faBoardId == NanoPi_NEO2 || faBoardId == NanoPi_NEO_Plus2) {
+        syspin = syspin_m1;
+    } else if (faBoardId == NanoPi_NEO
+               || faBoardId == NanoPi_NEO_Air
+               || faBoardId == NanoPi_NEO2
+               || faBoardId == NanoPi_NEO_Plus2) {
 	    pinToGpio = pinToGpio_neo;
 	    physToGpio = physToGpio_neo;
 	    physToPin = physToPin_neo;
-      syspin = syspin_neo;
+        syspin = syspin_neo;
     } else if (faBoardId == NanoPi_Duo) {
 	    pinToGpio = pinToGpio_duo;
 	    physToGpio = physToGpio_duo;
 	    physToPin = physToPin_duo;
-		  syspin = syspin_duo;
+        syspin = syspin_duo;
     } else if (faBoardId == NanoPi_Duo2) {
-      pinToGpio = pinToGpio_duo2;
-      physToGpio = physToGpio_duo2;
-      physToPin = physToPin_duo2;
-      syspin = syspin_duo2;
+        pinToGpio = pinToGpio_duo2;
+        physToGpio = physToGpio_duo2;
+        physToPin = physToPin_duo2;
+        syspin = syspin_duo2;
     } else if (faBoardId == NanoPi_NEO_Core || faBoardId == NanoPi_NEO_Core2) {
 	    pinToGpio = pinToGpio_neocore;
 	    physToGpio = physToGpio_neocore;
@@ -2575,11 +2565,17 @@ int wiringPiSetupSys(void) {
 
     piBoardId(&model, &rev, &mem, &maker, &overVolted);
     int faBoardId = model;
-    if (faBoardId == NanoPi_M1 || faBoardId == NanoPi_M1_Plus || faBoardId == NanoPi_M1_Plus2 || faBoardId == NanoPi_K1_Plus) {
+    if (faBoardId == NanoPi_M1
+            || faBoardId == NanoPi_M1_Plus
+            || faBoardId == NanoPi_M1_Plus2
+            || faBoardId == NanoPi_K1_Plus) {
         pinToGpio = pinToGpio_m1;
         physToGpio = physToGpio_m1;
         physToPin = physToPin_m1;
-    } else if (faBoardId == NanoPi_NEO || faBoardId == NanoPi_NEO_Air || faBoardId == NanoPi_NEO2 || faBoardId == NanoPi_NEO_Plus2) {
+    } else if (faBoardId == NanoPi_NEO
+               || faBoardId == NanoPi_NEO_Air
+               || faBoardId == NanoPi_NEO2
+               || faBoardId == NanoPi_NEO_Plus2) {
         pinToGpio = pinToGpio_neo;
         physToGpio = physToGpio_neo;
         physToPin = physToPin_neo;
