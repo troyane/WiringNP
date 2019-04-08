@@ -1713,78 +1713,72 @@ void pinModeAlt(int pin, int mode) {
  */
 
 void pinMode(int pin, int mode) {
+    struct wiringPiNodeStruct *node = wiringPiNodes;
 
-  struct wiringPiNodeStruct *node = wiringPiNodes;
+    if (wiringPiDebug)
+        printf("Func: %s, Line: %d,pin:%d,mode:%d\n", __func__, __LINE__, pin, mode);
 
-  if (wiringPiDebug)
-    printf("Func: %s, Line: %d,pin:%d,mode:%d\n", __func__, __LINE__, pin, mode);
-
-  if (pinToGpio == 0 || physToGpio == 0) {
-    printf("please call wiringPiSetup first.\n");
-    return;
-  }
-
-  // On-board pin
-    if (pin > 0 && pin < MAX_PIN_COUNT) {
-      if (wiringPiMode == WPI_MODE_PINS) {
-        pin = pinToGpio [pin];
-        if (wiringPiDebug) {
-         printf(">>> pinToGpio[pin] ret %d\n", pin);
-       }
-     } else if (wiringPiMode == WPI_MODE_PHYS) {
-      pin = physToGpio[pin];
-      if (wiringPiDebug) {
-        printf(">>> physToGpio[pin] ret %d\n", pin);
-      }
-    } else if (wiringPiMode == WPI_MODE_GPIO) {                 // pin = pinTobcm[pin]; 
-
-      pin = pin;
-
-      if (wiringPiDebug) {
-        printf(">>> pinTobcm[pin] ret %d\n", pin);
-      }
-
-    } else {
-      if (wiringPiDebug) {
-       printf(">>> unknow wiringPiMode\n");
-     }
-     return;
-   }
-   /*VCC or GND return directly*/ 
-   if (-1 == pin) {
-            //printf("[%s:L%d] the pin:%d is invaild,please check it over!\n", __func__,  __LINE__, pin);
-     return;
-   }
-
-   if (mode == INPUT) {
-      sunxi_set_gpio_mode(pin, INPUT);
-      wiringPinMode = INPUT;
-      return;
-    } else if (mode == OUTPUT) {
-      sunxi_set_gpio_mode(pin, OUTPUT); //gootoomoon_set_mode
-      wiringPinMode = OUTPUT;
-      return;
-    } else if (mode == PWM_OUTPUT) {
-      if (pin != 5) {
-        printf("the pin you choose doesn't support hardware PWM\n");
-        printf("you can select wiringPi pin %d for PWM pin\n", 1);
-        printf("or you can use it in softPwm mode\n");
+    if (pinToGpio == 0 || physToGpio == 0) {
+        printf("please call wiringPiSetup first.\n");
         return;
-      }
-      //printf("you choose the hardware PWM:%d\n", 1);
-      sunxi_set_gpio_mode(pin, PWM_OUTPUT);
-      wiringPinMode = PWM_OUTPUT;
-      return;
-    } else {
-      return;
     }
 
-  } else {
-    if ((node = wiringPiFindNode(pin)) != NULL)
-      node->pinMode(node, pin, mode);
-    return;
-  }
+    // On-board pin
+    if (pin > 0 && pin < MAX_PIN_COUNT) {
+        if (wiringPiMode == WPI_MODE_PINS) {
+            pin = pinToGpio[pin];
+            if (wiringPiDebug) {
+                printf(">>> pinToGpio[pin] ret %d\n", pin);
+            }
+        } else if (wiringPiMode == WPI_MODE_PHYS) {
+            pin = physToGpio[pin];
+            if (wiringPiDebug) {
+                printf(">>> physToGpio[pin] ret %d\n", pin);
+            }
+        } else if (wiringPiMode == WPI_MODE_GPIO) {                 // pin = pinTobcm[pin];
+            // pin = pin;
+            if (wiringPiDebug) {
+                printf(">>> pinTobcm[pin] ret %d\n", pin);
+            }
+        } else {
+            if (wiringPiDebug) {
+                printf(">>> unknow wiringPiMode\n");
+            }
+            return;
+        }
+        /*VCC or GND return directly*/
+        if (-1 == pin) {
+            //printf("[%s:L%d] the pin:%d is invaild,please check it over!\n", __func__,  __LINE__, pin);
+            return;
+        }
 
+        if (mode == INPUT) {
+            sunxi_set_gpio_mode(pin, INPUT);
+            wiringPinMode = INPUT;
+            return;
+        } else if (mode == OUTPUT) {
+            sunxi_set_gpio_mode(pin, OUTPUT); //gootoomoon_set_mode
+            wiringPinMode = OUTPUT;
+            return;
+        } else if (mode == PWM_OUTPUT) {
+            if (pin != 5) {
+                printf("the pin you choose doesn't support hardware PWM\n");
+                printf("you can select wiringPi pin %d for PWM pin\n", 1);
+                printf("or you can use it in softPwm mode\n");
+                return;
+            }
+            //printf("you choose the hardware PWM:%d\n", 1);
+            sunxi_set_gpio_mode(pin, PWM_OUTPUT);
+            wiringPinMode = PWM_OUTPUT;
+            return;
+        } else {
+            return;
+        }
+    } else {
+        if ((node = wiringPiFindNode(pin)) != NULL)
+            node->pinMode(node, pin, mode);
+        return;
+    }
 }
 
 /*
