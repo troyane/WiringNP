@@ -1804,10 +1804,13 @@ void pullUpDnControl(int pin, int pud) {
             pin = pinToGpio [pin];
         else if (wiringPiMode == WPI_MODE_PHYS)
             pin = physToGpio[pin];
-        else if (wiringPiMode == WPI_MODE_GPIO)
+        else if (wiringPiMode == WPI_MODE_GPIO) {
             // pin = pinTobcm[pin]; 
-            pin = pin;
-        else return;
+            // pin = pin;
+            // Nothing
+        } else {
+            return;
+        }
         if (wiringPiDebug)
             printf("%s,%d,pin:%d\n", __func__, __LINE__, pin);
 
@@ -1815,17 +1818,14 @@ void pullUpDnControl(int pin, int pud) {
             printf("[%s:L%d] the pin:%d is invaild,please check it over!\n", __func__, __LINE__, pin);
             return;
         }
-
         pud &= 3;
         sunxi_pullUpDnControl(pin, pud);
         return;
-    } else // Extension module
-    {
+    } else { // Extension module
         if ((node = wiringPiFindNode(pin)) != NULL)
             node->pullUpDnControl(node, pin, pud);
         return;
     }
-
 }
 
 /*
@@ -1837,23 +1837,18 @@ void pullUpDnControl(int pin, int pud) {
 int digitalRead(int pin) {
     char c;
     struct wiringPiNodeStruct *node = wiringPiNodes;
-    int oldPin = pin;
-
     if (wiringPiDebug)
       printf("Func: %s, Line: %d,pin:%d\n", __func__, __LINE__, pin);
-
     if (pinToGpio == 0 || physToGpio == 0) {
         printf("please call wiringPiSetup first.\n");
         return 0;
     }
 
     if (pin > 0 && pin < MAX_PIN_COUNT) {
-	    if (wiringPiMode == WPI_MODE_GPIO_SYS) // Sys mode
-	    {
+        if (wiringPiMode == WPI_MODE_GPIO_SYS) { // Sys mode
 		    if (wiringPiDebug) {
 			    printf("in digitalRead, wiringPiMode == WPI_MODE_GPIO_SYS\n");
 		    }
-
 		    if (pin == 0) {
 			    //printf("%d %s,%d invalid pin,please check it over.\n",pin,__func__, __LINE__);
 			    return 0;
@@ -1866,7 +1861,6 @@ int digitalRead(int pin) {
 			    return 0;
 		    }
         */
-
 		    if (sysFds [pin] == -1) {
 			    if (wiringPiDebug)
 				    printf("pin %d sysFds -1.%s,%d\n", pin, __func__, __LINE__);
@@ -1889,17 +1883,16 @@ int digitalRead(int pin) {
 		    }
 	    } else if (wiringPiMode == WPI_MODE_GPIO) {
 		    // pin = pinTobcm[pin]; 
-        pin = pin;
+            // pin = pin;
 
 		    if (wiringPiDebug) {
 			    printf(">>> pinTobcm[pin] ret %d\n", pin);
 		    }
-
 	    } else {
 		    return LOW;
 	    }
 	    if (-1 == pin) {
-		    printf("[%s:L%d] the pin:%d is invaild,please check it over!\n", __func__, __LINE__, oldPin);
+            printf("[%s:L%d] the pin:%d is invaild,please check it over!\n", __func__, __LINE__, pin);
 		    return LOW;
 	    }
 	    return sunxi_digitalRead(pin);
@@ -1913,39 +1906,37 @@ int digitalRead(int pin) {
 int digitalReadSilence(int pin) {
     char c;
     struct wiringPiNodeStruct *node = wiringPiNodes;
-    int oldPin = pin;
 
     if (pinToGpio == 0 || physToGpio == 0) {
         return 0;
     }
 
     if (pin > 0 && pin < MAX_PIN_COUNT) {
-      if (wiringPiMode == WPI_MODE_GPIO_SYS) // Sys mode
-      {
-        if (pin == 0) {
-          return 0;
+        if (wiringPiMode == WPI_MODE_GPIO_SYS) { // Sys mode
+            if (pin == 0) {
+                return 0;
+            }
+            if (sysFds [pin] == -1) {
+                return LOW;
+            }
+            lseek(sysFds [pin], 0L, SEEK_SET);
+            read(sysFds [pin], &c, 1);
+            return (c == '0') ? LOW : HIGH;
+        } else if (wiringPiMode == WPI_MODE_PINS) {
+            pin = pinToGpio [pin];
+        } else if (wiringPiMode == WPI_MODE_PHYS) {
+            pin = physToGpio[pin];
+        } else if (wiringPiMode == WPI_MODE_GPIO) {
+            // pin = pinTobcm[pin];
+            // pin = pin;
+            // Nothing
+        } else {
+            return LOW;
         }
-
-        if (sysFds [pin] == -1) {
-          return LOW;
+        if (-1 == pin) {
+            return LOW;
         }
-        lseek(sysFds [pin], 0L, SEEK_SET);
-        read(sysFds [pin], &c, 1);
-        return (c == '0') ? LOW : HIGH;
-      } else if (wiringPiMode == WPI_MODE_PINS) {
-        pin = pinToGpio [pin];
-      } else if (wiringPiMode == WPI_MODE_PHYS) {
-        pin = physToGpio[pin];
-      } else if (wiringPiMode == WPI_MODE_GPIO) {
-        // pin = pinTobcm[pin]; 
-        pin = pin;
-      } else {
-        return LOW;
-      }
-      if (-1 == pin) {
-        return LOW;
-      }
-      return sunxi_digitalRead(pin);
+        return sunxi_digitalRead(pin);
     } else {
         if ((node = wiringPiFindNode(pin)) == NULL)
             return LOW;
@@ -2002,9 +1993,11 @@ void digitalWrite(int pin, int value) {
             pin = pinToGpio [pin];
         else if (wiringPiMode == WPI_MODE_PHYS)
             pin = physToGpio[pin];
-        else if (wiringPiMode == WPI_MODE_GPIO)
+        else if (wiringPiMode == WPI_MODE_GPIO) {
             // pin = pinTobcm[pin];
-            pin = pin;
+            // pin = pin;
+            // Nothing
+        }
         else return;
         if (-1 == pin) {
             //printf("[%s:L%d] the pin:%d is invaild,please check it over!\n", __func__,  __LINE__, pin);
