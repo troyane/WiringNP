@@ -1521,26 +1521,28 @@ int getAlt(int pin) {
         pin = pinToGpio [pin];
     else if (wiringPiMode == WPI_MODE_PHYS)
         pin = physToGpio[pin];
-    else if (wiringPiMode == WPI_MODE_GPIO)    //pin = pinTobcm[pin]; 
-        pin = pin;
-    else return 0;
-
+    else if (wiringPiMode == WPI_MODE_GPIO) {
+        //pin = pinTobcm[pin];
+        // pin = pin;
+        // Nothing
+    } else {
+        return 0;
+    }
     if (-1 == pin) {
         printf("[%s:L%d] the pin:%d  mode: %d is invaild,please check it over!\n", __func__, __LINE__, pin, wiringPiMode);
         return -1;
     }
     alt = sunxi_get_gpio_mode(pin);
     return alt;
-
 }
 
 int getAltSilence(int pin) {
     int alt;
 
-  if (pin >= MAX_PIN_COUNT || pin < 0) {
+    if (pin >= MAX_PIN_COUNT || pin < 0) {
         return -1;
-  }
-  
+    }
+
     if (pinToGpio == 0 || physToGpio == 0) {
         return -1;
     }
@@ -1550,9 +1552,13 @@ int getAltSilence(int pin) {
         pin = pinToGpio [pin];
     else if (wiringPiMode == WPI_MODE_PHYS)
         pin = physToGpio[pin];
-    else if (wiringPiMode == WPI_MODE_GPIO)    //pin = pinTobcm[pin]; 
-        pin = pin;
-    else return 0;
+    else if (wiringPiMode == WPI_MODE_GPIO) {
+        // pin = pinTobcm[pin];
+        // pin = pin;
+        // Nothing
+    } else {
+        return 0;
+    }
 
     if (-1 == pin) {
         return -1;
