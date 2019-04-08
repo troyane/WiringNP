@@ -2024,7 +2024,6 @@ void digitalWrite(int pin, int value) {
  *	Set an output PWM value
  *********************************************************************************
  */
-
 void pwmWrite(int pin, int value) {
     struct wiringPiNodeStruct *node = wiringPiNodes;
 
@@ -2033,27 +2032,27 @@ void pwmWrite(int pin, int value) {
         return;
     }
 
-
     uint32_t a_val = 0;
-    if (pwmmode == 1)//sycle
-    {
+    if (pwmmode == 1) { // cycle
         sunxi_pwm_set_mode(1);
     } else {
-        //sunxi_pwm_set_mode(0);
+        // sunxi_pwm_set_mode(0);
     }
-    if (pin < MAX_PIN_NUM) // On-Board Pin needto fix me Jim
-    {
+    if (pin < MAX_PIN_NUM) { // On-Board Pin needto fix me Jim
         if (wiringPiMode == WPI_MODE_PINS)
-            pin = pinToGpio [pin];
+            pin = pinToGpio[pin];
         else if (wiringPiMode == WPI_MODE_PHYS) {
             pin = physToGpio[pin];
-        } else if (wiringPiMode == WPI_MODE_GPIO)
+        } else if (wiringPiMode == WPI_MODE_GPIO) {
             // pin = pinTobcm[pin];
-            pin = pin;
-        else
+            // pin = pin;
+
+            // Nothing to do here
+        } else {
             return;
+        }
         if (-1 == pin) {
-            printf("[%s:L%d] the pin:%d is invaild,please check it over!\n", __func__, __LINE__, pin);
+            printf("[%s:L%d] the pin:%d is invaild, please check it over!\n", __func__, __LINE__, pin);
             return;
         }
         if (pin != 5) {
@@ -2062,18 +2061,18 @@ void pwmWrite(int pin, int value) {
         }
         a_val = sunxi_pwm_get_period();
         if (wiringPiDebug)
-            printf("==> no:%d period now is :%d,act_val to be set:%d\n", __LINE__, a_val, value);
+            printf("==> no:%d period now is :%d, act_val to be set:%d\n", __LINE__, a_val, value);
         if (value > a_val) {
             printf("val pwmWrite 0 <= X <= 1024\n");
-            printf("Or you can set new range by yourself by pwmSetRange(range\n");
+            printf("Or you can set new range by yourself by pwmSetRange(range)\n");
             return;
         }
-        //if value changed chang it
+        // if value changed -> change it
         sunxi_pwm_set_enable(0);
         sunxi_pwm_set_act(value);
         sunxi_pwm_set_enable(1);
     } else {
-        printf("not on board :%s,%d\n", __func__, __LINE__);
+        printf("not on board:%s,%d\n", __func__, __LINE__);
         if ((node = wiringPiFindNode(pin)) != NULL) {
             if (wiringPiDebug)
                 printf("Jim find node%s,%d\n", __func__, __LINE__);
@@ -2084,7 +2083,6 @@ void pwmWrite(int pin, int value) {
         printf("this fun is ok now %s,%d\n", __func__, __LINE__);
 
     return;
-
 }
 
 /*
