@@ -2185,7 +2185,6 @@ void digitalWriteByte(int value) {
         }
     }
     return;
-
 }
 
 /*
@@ -2205,13 +2204,14 @@ int waitForInterrupt(int pin, int mS) {
 
     if (pinToGpio == 0 || physToGpio == 0) {
         printf("please call wiringPiSetup first.\n");
-        return;
+        return -1;
     }
 
-    /**/ if (wiringPiMode == WPI_MODE_PINS)
+    if (wiringPiMode == WPI_MODE_PINS) {
         pin = pinToGpio [pin];
-    else if (wiringPiMode == WPI_MODE_PHYS)
+    } else if (wiringPiMode == WPI_MODE_PHYS) {
         pin = physToGpio [pin];
+    }
 
     if ((fd = sysFds [pin]) == -1)
         return -2;
