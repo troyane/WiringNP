@@ -2127,18 +2127,14 @@ void analogWrite(int pin, int value) {
  */
 
 void pwmToneWrite(int pin, int freq) {
-    int range;
-
-    if (freq == 0)
+    if (freq == 0) {
         pwmWrite(pin, 0); // Off
-    else {
-        range = 600000 / freq;
+    } else {
+        int range = 600000 / freq;
         pwmSetRange(range);
         pwmWrite(pin, freq / 2);
     }
 }
-
-
 
 /*
  * digitalWriteByte:
